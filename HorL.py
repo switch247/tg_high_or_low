@@ -1,5 +1,5 @@
 from traceback import print_tb
-from logo import logo,vs
+from logo import logo
 import csv
 import random
 from aiogram import Bot, Dispatcher, executor, types
@@ -30,50 +30,55 @@ def assign():
     while (a[3].isdigit()==False ):
          a = (random.choice(acc) )
     while (z[3].isdigit()==False ):
-         z = (random.choice(acc) )    
+         z = (random.choice(acc) )  
+    print(a)
+    print(z[3])  
     return a, z
 
 a,z=assign()
-score=0
+
 #print(acc)
-print(a)
-print(z[3])
+
 def compare(x):
     if x =="HIGHER!":
-        if max(a[3],z[3])==z[3]:
+        if max(int(a[3]),int(z[3]) )==int(z[3]):
             #correct retur
-            score+=1
             return True
             
         else:
             #emd amd display score
             return False
     elif x =="LOWER!":
-        if max(a[3],z[3])==a[3]:
-            #correct message.reply(f'{a[1]} vs {z[1]}: {z[1]} is')
-            score+=1
+        if min(int(a[3]),int(z[3]) )==int(z[3]):
+            #correct 
             return True
         else:
             #emd amd display score
             return False
+            
     else: 
-        pass
+        return "what"
 
-def play_higher_lower():
-	pass
 @bot.message_handler(commands=['start', 'Start'])
 async def welcome(message: types.Message):
+    #score = 0
     await message.reply(logo, reply_markup=kerboard_reply)
     await message.reply(f'{a[1]} vs {z[1]}: {z[1]} is')
 
-@bot.message_handler(commands=["LOWER!", "HIGHER!"])
-async def welcome(message: types.Message):
-    if(compare(message) ):
-        a,z=assign()
-        #await message.reply("correct", reply_markup=kerboard_reply)
-        await message.reply(f'{a[1]} vs {z[1]}: {z[1]} is', reply_markup=kerboard_reply)
-    else:
-        await message.reply(f'score:{score}')
-        
-        
+@bot.message_handler()
+async def wel(message: types.Message):
+    if message.text == "LOWER!" or message.text =="HIGHER!":
+        if(compare(message.text)==True ):
+            print( compare(message.text) )
+            score += 1
+            a,z=assign()
+            await message.reply("correct" ,reply_markup=kerboard_reply)
+            await message.reply(f'{a[1]} vs {z[1]}: {z[1]} is', reply_markup=kerboard_reply)
+        else:
+            print(compare(message.text))
+            await message.reply(f'score:{score}')
+            a,z=assign()
+            await message.reply(f'{a[1]} vs {z[1]}: {z[1]} is', reply_markup=kerboard_reply)
+            
+score = 0        
 executor.start_polling(bot)
