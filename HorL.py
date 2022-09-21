@@ -1,5 +1,5 @@
 from traceback import print_tb
-from logo import logo
+from logo import logo,vs
 import csv
 import random
 from aiogram import Bot, Dispatcher, executor, types
@@ -9,7 +9,8 @@ from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 from requests import *#get()
 import os
 
-
+global score 
+score = 0 
 
 API_KEY = os.getenv('API_KEY')
 dp = Bot(token=API_KEY)
@@ -29,7 +30,8 @@ def assign():
     z = (random.choice(acc) )
     while (a[3].isdigit()==False ):
          a = (random.choice(acc) )
-    while (z[3].isdigit()==False ):
+
+    while (z[3].isdigit()==False or a==z):
          z = (random.choice(acc) )  
     print(a)
     print(z[3])  
@@ -70,6 +72,7 @@ async def wel(message: types.Message):
     if message.text == "LOWER!" or message.text =="HIGHER!":
         if(compare(message.text)==True ):
             print( compare(message.text) )
+            global score
             score += 1
             a,z=assign()
             await message.reply("correct" ,reply_markup=kerboard_reply)
@@ -77,8 +80,11 @@ async def wel(message: types.Message):
         else:
             print(compare(message.text))
             await message.reply(f'score:{score}')
+            #global score
+            score =0
             a,z=assign()
+            await message.reply(logo, reply_markup=kerboard_reply)
             await message.reply(f'{a[1]} vs {z[1]}: {z[1]} is', reply_markup=kerboard_reply)
             
-score = 0        
+       
 executor.start_polling(bot)
